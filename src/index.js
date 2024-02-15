@@ -1,5 +1,7 @@
 import { AUTO, Scale, Game } from "phaser";
-import DoggyBrosScene from "./scenes/DoggyBrosScene";
+import StartGameScene from "./scenes/MainMenu";
+import Level1 from "./scenes/Level1";
+import GameOver from "./scenes/GameOver"
 
 const config = {
   type: AUTO,
@@ -19,7 +21,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [DoggyBrosScene],
+  scene: [StartGameScene,Level1,GameOver],
 };
 
 /* eslint-disable-next-line */

@@ -1,13 +1,14 @@
 import { Scene } from "phaser";
-export default class DoggyBrosScene extends Scene {
+export default class Level1 extends Scene {
   constructor() {
-    super("doggy-bros-scene1");
+    super("level-1");
   }
 
   init() {
     this.platform = [];
     this.player = undefined;
     this.star = undefined;
+    this.bomb = undefined;
     this.cursor = undefined;
     this.scoreText = undefined;
     this.score = 0;
@@ -27,6 +28,7 @@ export default class DoggyBrosScene extends Scene {
     this.load.image("PlatLeft", "images/Tiles/13.png");
     this.load.image("PlatRight", "images/Tiles/15.png");
     this.load.image("star", "images/star.png");
+    this.load.image("bomb", "images/bomb.png");
 
     this.load.spritesheet("dude", "images/Dino.png", {
       frameWidth: 24,
@@ -88,11 +90,22 @@ export default class DoggyBrosScene extends Scene {
       key: "star",
       repeat: 3,
       setXY: { x: 650, y: 0, stepX: 600 },
-    });
+    })
+    this.bomb = this.physics.add
+      .group({
+        key: "bomb",
+        repeat: 2,
+        setXY: { x: 500, y: 0, stepX: 1000 },
+    })
     this.physics.add.collider(this.star, this.platform);
+    this.physics.add.collider(this.bomb, this.platform);
     this.star.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5);
+      child.setBounceY(0.5).setScale(3)
+    });
+    this.bomb.children.iterate(function (child) {
+      // @ts-ignore
+      child.setBounceY(0.5).setScale(3)
     });
 
     // Cursor
@@ -102,7 +115,7 @@ export default class DoggyBrosScene extends Scene {
     // diem
     this.anims.create({
       key: "turn",
-      frames: [{ key: "dude", frame: 16 }],
+      frames: [{ key: "dude", frame: 1 }],
       frameRate: 20,
     });
     // right turn
@@ -128,6 +141,8 @@ export default class DoggyBrosScene extends Scene {
       null,
       this
     );
+    // Kena Bom
+    this.physics.add.overlap(this.player, this.bomb, this.gameOver, null, this);
     // membuat score
     this.scoreText = this.add.text(16, 16, "Star Collected : 0", {
       fontSize: "64px",
@@ -143,9 +158,11 @@ export default class DoggyBrosScene extends Scene {
       //Kecepatan y : 200
       //(bergerak ke kiri dan turun kebawah seolah terkena gaya gravitasi)
       this.player.anims.play("left", true);
+      this.player.setFlipX(true);
     } else if (this.cursor.right.isDown) {
       this.player.setVelocity(200, 200);
       this.player.anims.play("right", true);
+      this.player.setFlipX(false);
     } else {
       this.player.setVelocity(0, 0);
       this.player.anims.play("turn");
@@ -162,5 +179,10 @@ export default class DoggyBrosScene extends Scene {
     star.destroy();
     this.score += 1;
     this.scoreText.setText("Star Collected : " + this.score);
+  }
+
+  gameOver() {
+    this.physics.pause();
+    this.scene.start("over-scene");
   }
 }
