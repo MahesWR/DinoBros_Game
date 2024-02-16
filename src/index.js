@@ -1,6 +1,7 @@
 import { AUTO, Scale, Game } from "phaser";
 import StartGameScene from "./scenes/MainMenu";
 import Level1 from "./scenes/Level1";
+import WinScene from "./scenes/Win"
 import GameOver from "./scenes/GameOver"
 
 const config = {
@@ -21,7 +22,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [StartGameScene,Level1,GameOver],
+  scene: [StartGameScene,Level1,WinScene,GameOver],
 };
 
 /* eslint-disable-next-line */

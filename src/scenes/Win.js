@@ -1,8 +1,8 @@
 import { Scene } from "phaser";
 
-export default class StartGameScene extends Scene {
+export default class WinScene extends Scene {
   constructor() {
-    super("start-game-scene");
+    super("win-scene");
   }
 
   init(data) {

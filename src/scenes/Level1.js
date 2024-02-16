@@ -171,6 +171,14 @@ export default class Level1 extends Scene {
       this.player.setVelocity(0, -200);
       this.player.anims.play("turn");
     }
+
+    if (this.score >= 3) {
+      this.physics.pause();
+      this.add.text(300, 300, "You Win!!!", {
+          fontSize: "48px",
+          fill: "yellow",
+      });
+    }
   }
 
   // Method
