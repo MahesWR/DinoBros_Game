@@ -79,6 +79,24 @@ export default class Level1 extends Scene {
     this.platform.create(850, 500, "PlatRight");
     this.platform.create(725, 500, "PlatMid");
     this.platform.create(1300, 300, "PlatMid");
+    this.platform.create(0, 0, "PlatMid");
+    this.platform.create(100, 0, "PlatMid");
+    this.platform.create(200, 0, "PlatMid");
+    this.platform.create(300, 0, "PlatMid");
+    this.platform.create(400, 0, "PlatMid");
+    this.platform.create(500, 0, "PlatMid");
+    this.platform.create(600, 0, "PlatMid");
+    this.platform.create(700, 0, "PlatMid");
+    this.platform.create(800, 0, "PlatMid");
+    this.platform.create(900, 0, "PlatMid");
+    this.platform.create(1000, 0, "PlatMid");
+    this.platform.create(1100, 0, "PlatMid");
+    this.platform.create(1200, 0, "PlatMid");
+    this.platform.create(1300, 0, "PlatMid");
+    this.platform.create(1400, 0, "PlatMid");
+    this.platform.create(1500, 0, "PlatMid");
+    this.platform.create(1600, 0, "PlatMid");
+    this.platform.create(1700, 0, "PlatMid");
 
     // Create Sprite
     this.player = this.physics.add.sprite(100, 750, "dude").setScale(4);
@@ -90,22 +108,21 @@ export default class Level1 extends Scene {
       key: "star",
       repeat: 3,
       setXY: { x: 650, y: 0, stepX: 600 },
-    })
-    this.bomb = this.physics.add
-      .group({
-        key: "bomb",
-        repeat: 2,
-        setXY: { x: 500, y: 0, stepX: 1000 },
-    })
+    });
+    this.bomb = this.physics.add.group({
+      key: "bomb",
+      repeat: 2,
+      setXY: { x: 500, y: 0, stepX: 1000 },
+    });
     this.physics.add.collider(this.star, this.platform);
     this.physics.add.collider(this.bomb, this.platform);
     this.star.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5).setScale(3)
+      child.setBounceY(0.5).setScale(3);
     });
     this.bomb.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5).setScale(3)
+      child.setBounceY(0.5).setScale(3);
     });
 
     // Cursor
@@ -144,7 +161,7 @@ export default class Level1 extends Scene {
     // Kena Bom
     this.physics.add.overlap(this.player, this.bomb, this.gameOver, null, this);
     // membuat score
-    this.scoreText = this.add.text(16, 16, "Star Collected : 0", {
+    this.scoreText = this.add.text(16, 16, "Star Collected : 0 , Level 1", {
       fontSize: "64px",
       backgroundColor: "SkyBlue",
     });
@@ -174,10 +191,7 @@ export default class Level1 extends Scene {
 
     if (this.score >= 3) {
       this.physics.pause();
-      this.add.text(300, 300, "You Win!!!", {
-          fontSize: "48px",
-          fill: "yellow",
-      });
+      this.scene.start("win-scene1");
     }
   }
 

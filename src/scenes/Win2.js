@@ -1,8 +1,8 @@
 import { Scene } from "phaser";
 
-export default class WinScene extends Scene {
+export default class WinScene2 extends Scene {
   constructor() {
-    super("win-scene");
+    super("win-scene2");
   }
 
   init(data) {
@@ -31,6 +31,8 @@ export default class WinScene extends Scene {
     const tile = this.physics.add.staticImage(900, 400, "tile").setScale(1.5);
     this.player = this.physics.add.sprite(900, 0, "start").setScale(6);
     this.physics.add.collider(this.player, tile);
+    this.add.text(550,500,'You Win!, Go to level 3?', { 
+      fontSize: '48px', backgroundColor: "SkyBlue" })
     this.startButton = this.add
       .image(900, 800, "start1")
       .setInteractive()
@@ -38,7 +40,7 @@ export default class WinScene extends Scene {
     this.startButton.once(
       "pointerup",
       () => {
-        this.scene.start("level-1");
+        this.scene.start("level-3");
       },
       this
     );
