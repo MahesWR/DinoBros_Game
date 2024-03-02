@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
-export default class Level2 extends Scene {
+export default class Level3 extends Scene {
   constructor() {
-    super("level-2");
+    super("level-3");
   }
 
   init() {
@@ -9,6 +9,7 @@ export default class Level2 extends Scene {
     this.player = undefined;
     this.star = undefined;
     this.bomb = undefined;
+    this.bombs = undefined;
     this.cursor = undefined;
     this.scoreText = undefined;
     this.score = 0;
@@ -30,6 +31,7 @@ export default class Level2 extends Scene {
     this.load.image("PlatRight", "images/Tiles/15.png");
     this.load.image("star", "images/star.png");
     this.load.image("bomb", "images/bomb.png");
+    this.load.image("bombs", "images/bomb.png");
 
     this.load.spritesheet("dude", "images/Dino.png", {
       frameWidth: 24,
@@ -115,13 +117,23 @@ export default class Level2 extends Scene {
       repeat: 2,
       setXY: { x: 500, y: 0, stepX: 1000 },
     });
+    this.bombs = this.physics.add.group({
+      key: "bombs",
+      repeat: 2,
+      setXY: { x: 600, y: 550, stepX: 700 },
+    });
     this.physics.add.collider(this.star, this.platform);
     this.physics.add.collider(this.bomb, this.platform);
+    this.physics.add.collider(this.bombs, this.platform);
     this.star.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5).setScale(3);
+      child.setBounceY(1).setScale(3);
     });
     this.bomb.children.iterate(function (child) {
+      // @ts-ignore
+      child.setBounceY(1).setScale(3);
+    });
+    this.bombs.children.iterate(function (child) {
       // @ts-ignore
       child.setBounceY(1).setScale(3);
     });
@@ -161,8 +173,15 @@ export default class Level2 extends Scene {
     );
     // Kena Bom
     this.physics.add.overlap(this.player, this.bomb, this.gameOver, null, this);
+    this.physics.add.overlap(
+      this.player,
+      this.bombs,
+      this.gameOver,
+      null,
+      this
+    );
     // membuat score
-    this.scoreText = this.add.text(16, 16, "Star Collected : 0 , Level 2", {
+    this.scoreText = this.add.text(16, 16, "Star Collected : 0 , Level 3", {
       fontSize: "64px",
       backgroundColor: "SkyBlue",
     });
@@ -187,17 +206,17 @@ export default class Level2 extends Scene {
     }
     if (this.cursor.up.isDown) {
       // this.player.setVelocity(0, -200);
-      this.startJump()
+      this.startJump();
       this.player.anims.play("turn");
     }
-    if(this.cursor.up.isUp){
-      this.player.setVelocityY(200)
-      this.endJump
+    if (this.cursor.up.isUp) {
+      this.player.setVelocityY(200);
+      this.endJump;
     }
 
     if (this.score >= 3) {
       this.physics.pause();
-      this.scene.start("win-scene2");
+      this.scene.start("win-scene3");
     }
   }
 
@@ -213,27 +232,27 @@ export default class Level2 extends Scene {
     this.physics.pause();
     this.scene.start("over-scene");
   }
-  
-  startJump(){
+
+  startJump() {
     this.timer = this.time.addEvent({
       delay: 100,
       callback: this.tick,
       callbackScope: this,
-      loop: true
-    })
-    this.player.setVelocityY(-200)
+      loop: true,
+    });
+    this.player.setVelocityY(-200);
   }
 
-  endJump(){
-    this.timer.remove()
-    this.player.setVelocityY(this.power * 400)
-    this.power = 0
+  endJump() {
+    this.timer.remove();
+    this.player.setVelocityY(this.power * 400);
+    this.power = 0;
   }
 
-  tick(){
-    if(this.power < 10){
-      this.power += 1
-      console.log(this.power)
+  tick() {
+    if (this.power < 10) {
+      this.power += 1;
+      console.log(this.power);
     }
   }
 }

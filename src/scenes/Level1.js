@@ -12,6 +12,7 @@ export default class Level1 extends Scene {
     this.cursor = undefined;
     this.scoreText = undefined;
     this.score = 0;
+    this.power = 0;
   }
 
   preload() {
@@ -114,6 +115,7 @@ export default class Level1 extends Scene {
       repeat: 2,
       setXY: { x: 500, y: 0, stepX: 1000 },
     });
+    this.player.setGravityY(100);
     this.physics.add.collider(this.star, this.platform);
     this.physics.add.collider(this.bomb, this.platform);
     this.star.children.iterate(function (child) {
@@ -165,6 +167,8 @@ export default class Level1 extends Scene {
       fontSize: "64px",
       backgroundColor: "SkyBlue",
     });
+
+  
   }
 
   update() {
@@ -185,9 +189,16 @@ export default class Level1 extends Scene {
       this.player.anims.play("turn");
     }
     if (this.cursor.up.isDown) {
-      this.player.setVelocity(0, -200);
+      // this.player.setVelocity(0, -200);
+      this.startJump()
       this.player.anims.play("turn");
     }
+    if(this.cursor.up.isUp){
+      this.player.setVelocityY(200)
+      this.endJump
+    }
+
+    
 
     if (this.score >= 3) {
       this.physics.pause();
@@ -206,5 +217,28 @@ export default class Level1 extends Scene {
   gameOver() {
     this.physics.pause();
     this.scene.start("over-scene");
+  }
+
+  startJump(){
+    this.timer = this.time.addEvent({
+      delay: 100,
+      callback: this.tick,
+      callbackScope: this,
+      loop: true
+    })
+    this.player.setVelocityY(-200)
+  }
+
+  endJump(){
+    this.timer.remove()
+    this.player.setVelocityY(this.power * 400)
+    this.power = 0
+  }
+
+  tick(){
+    if(this.power < 10){
+      this.power += 1
+      console.log(this.power)
+    }
   }
 }

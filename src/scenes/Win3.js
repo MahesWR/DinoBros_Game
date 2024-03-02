@@ -1,13 +1,14 @@
-import {Scene} from "phaser";
+import { Scene } from "phaser";
 
-export default class GameOverScene extends Scene {
+export default class WinScene1 extends Scene {
   constructor() {
-    super("over-scene");
+    super("win-scene3");
   }
 
   init(data) {
     this.replayButton = undefined;
     this.score = data.score;
+    this.player = undefined;
   }
 
   preload() {
@@ -16,7 +17,6 @@ export default class GameOverScene extends Scene {
     this.load.image("tile", "images/Tiles/14.png");
     this.load.image("tile1", "images/Tiles/13.png");
     this.load.image("tile2", "images/Tiles/15.png");
-    this.load.image("replay-button", "images/replay.png")
 
     this.load.spritesheet("start", "images/Dino.png", {
       frameWidth: 24,
@@ -31,12 +31,18 @@ export default class GameOverScene extends Scene {
     const tile = this.physics.add.staticImage(900, 400, "tile").setScale(1.5);
     this.player = this.physics.add.sprite(900, 0, "start").setScale(6);
     this.physics.add.collider(this.player, tile);
-    this.replayButton = this.add.image(900,800, "replay-button").setInteractive().setScale(2);
-    this.replayButton.once(
-        "pointerup",() => {
-          this.scene.start("level-1");
-        },
-        this
-      )
+    this.add.text(550,500,'You Win! Congratzz!!', { 
+      fontSize: '48px', backgroundColor: "SkyBlue" })
+    this.startButton = this.add
+      .image(900, 800, "start1")
+      .setInteractive()
+      .setScale(2);
+    this.startButton.once(
+      "pointerup",
+      () => {
+        this.scene.start("start-game-scene");
+      },
+      this
+    );
   }
 }
