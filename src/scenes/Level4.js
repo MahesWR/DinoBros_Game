@@ -1,7 +1,7 @@
 import { Scene } from "phaser";
-export default class Level1 extends Scene {
+export default class Level4 extends Scene {
   constructor() {
-    super("level-1");
+    super("level-4");
   }
 
   init() {
@@ -13,7 +13,13 @@ export default class Level1 extends Scene {
     this.cursor = undefined;
     this.scoreText = undefined;
     this.score = 0;
-    this.power = 0;
+    this.max = 200;
+    this.MAX_SPEED = 500; // pixels/second
+    this.ACCELERATION = 1500; // pixels/second/second
+    this.DRAG = 600;
+    this.JUMP_SPEED = -1000;
+    this.jumping = false;
+    this.jump = 0;
   }
 
   preload() {
@@ -30,12 +36,8 @@ export default class Level1 extends Scene {
     this.load.image("PlatLeft", "images/Tiles/13.png");
     this.load.image("PlatRight", "images/Tiles/15.png");
     this.load.image("star", "images/star.png");
-    this.load.image("bombs", "images/bomb.png");
     this.load.image("bomb", "images/bomb.png");
-    this.load.audio("theme", "SFX/Mario-theme-song.mp3")
-    this.load.audio("jumpSFX", "SFX/Mario-jump-sound.mp3")
-    this.load.audio("die", "SFX/Pacman-death-sound.mp3")
-    this.load.audio("collect", "SFX/Collect-item-sound.mp3")
+    this.load.image("bombs", "images/bomb.png");
 
     this.load.spritesheet("dude", "images/Dino.png", {
       frameWidth: 24,
@@ -106,7 +108,7 @@ export default class Level1 extends Scene {
     this.platform.create(1700, 0, "PlatMid");
 
     // Create Sprite
-    this.player = this.physics.add.sprite(100, 750, "dude").setScale(4);
+    this.player = this.physics.add.sprite(100, 780, "dude").setScale(4);
     this.player.setCollideWorldBounds(true);
     this.physics.add.collider(this.player, this.platform);
 
@@ -131,15 +133,15 @@ export default class Level1 extends Scene {
     this.physics.add.collider(this.bombs, this.platform);
     this.star.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5).setScale(3);
+      child.setBounceY(1).setScale(3);
     });
     this.bomb.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5).setScale(3);
+      child.setBounceY(1).setScale(3);
     });
     this.bombs.children.iterate(function (child) {
       // @ts-ignore
-      child.setBounceY(0.5).setScale(3);
+      child.setBounceY(1).setScale(3);
     });
 
     // Cursor
@@ -185,30 +187,24 @@ export default class Level1 extends Scene {
       this
     );
     // membuat score
-    this.scoreText = this.add.text(16, 16, "Star Collected : 0 , Level 1", {
+    this.scoreText = this.add.text(16, 16, "Star Collected : 0 , Level 4", {
       fontSize: "64px",
       backgroundColor: "SkyBlue",
     });
-
-    this.backsound = this.sound.add("theme")
-    var soundConfig = {
-      loop: true,
-      volume: 5
-    }
-    this.backsound.play(soundConfig)
+    // this.platform.setCollisionByExclusion(-1, true)
   }
 
   update() {
     if (this.cursor.left.isDown) {
       //Jika keyboard panah kiri ditekan
-      this.player.setVelocityX(-200);
+      this.player.setVelocity(-200, 200);
       //Kecepatan x : -200
       //Kecepatan y : 200
       //(bergerak ke kiri dan turun kebawah seolah terkena gaya gravitasi)
       this.player.anims.play("left", true);
       this.player.setFlipX(true);
     } else if (this.cursor.right.isDown) {
-      this.player.setVelocityX(200);
+      this.player.setVelocity(200, 200);
       this.player.anims.play("right", true);
       this.player.setFlipX(false);
     } else {
@@ -216,24 +212,30 @@ export default class Level1 extends Scene {
       this.player.anims.play("turn");
     }
     if (this.cursor.up.isDown) {
+      // this.player.setVelocity(0, -200);
+      // this.startJump();
       this.player.anims.play("turn");
-      this.startJump();
     }
     if (this.cursor.up.isUp) {
-      this.endJump;
+      // this.player.setVelocityY(200);
+      // this.endJump();
+    }
+
+    if (this.cursor.up.isDown && this.player.body.onFloor()) {
+      this.player.setVelocityY(-400);
     }
 
     if (this.score >= 3) {
       this.physics.pause();
-      this.backsound.pause()
-      this.scene.start("win-scene1");
+      this.scene.start("win-scene4");
     }
+
+    //    this.bombMovement()
   }
 
   // Method
 
   collectStar(player, star) {
-    this.sound.play("collect")
     star.destroy();
     this.score += 1;
     this.scoreText.setText("Star Collected : " + this.score);
@@ -241,31 +243,31 @@ export default class Level1 extends Scene {
 
   gameOver() {
     this.physics.pause();
-    this.sound.play("die")
-    this.backsound.pause()
     this.scene.start("over-scene");
   }
 
-  startJump() {
-    this.timer = this.time.addEvent({
-      delay: 100,
-      callback: this.tick,
-      callbackScope: this,
-      loop: true,
-    });
-    this.player.setVelocityY(this.power * -80);
-  }
+  // startJump() {
+  //   this.timer = this.time.addEvent({
+  //     delay: 100,
+  //     callback: this.tick,
+  //     callbackScope: this,
+  //     loop: true,
+  //   });
+  //   this.player.setVelocityY(this.power * -80);
+  // }
 
-  endJump() {
-    this.time.removeEvent(this.timer);
-    this.player.setVelocityY(this.power * 400);
-    this.power = 0;
-  }
+  // endJump() {
+  //   this.time.removeEvent(this.timer);
+  //   this.player.setVelocityY(this.power * 200);
+  //   this.power = 0;
+  // }
 
-  tick() {
-    if (this.power < 5) {
-      this.power += 1;
-      console.log(this.power)
-    }
-  }
+  // tick() {
+  //   if (this.power < 4) {
+  //     this.power += 1;
+  //     console.log(this.power);
+  //   }
+  // }
+
+
 }

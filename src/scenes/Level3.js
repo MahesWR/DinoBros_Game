@@ -32,6 +32,9 @@ export default class Level3 extends Scene {
     this.load.image("star", "images/star.png");
     this.load.image("bomb", "images/bomb.png");
     this.load.image("bombs", "images/bomb.png");
+    this.load.audio("theme", "SFX/Mario-theme-song.mp3")
+    this.load.audio("jumpSFX", "SFX/Mario-jump-sound.mp3")
+    this.load.audio("die", "SFX/Pacman-death-sound.mp3")
 
     this.load.spritesheet("dude", "images/Dino.png", {
       frameWidth: 24,
@@ -102,7 +105,7 @@ export default class Level3 extends Scene {
     this.platform.create(1700, 0, "PlatMid");
 
     // Create Sprite
-    this.player = this.physics.add.sprite(100, 750, "dude").setScale(4);
+    this.player = this.physics.add.sprite(100, 780, "dude").setScale(4);
     this.player.setCollideWorldBounds(true);
     this.physics.add.collider(this.player, this.platform);
 
@@ -114,13 +117,13 @@ export default class Level3 extends Scene {
     });
     this.bomb = this.physics.add.group({
       key: "bomb",
-      repeat: 2,
-      setXY: { x: 500, y: 0, stepX: 1000 },
+      repeat: 5,
+      setXY: { x: 500, y: 0, stepX: 300 },
     });
     this.bombs = this.physics.add.group({
       key: "bombs",
-      repeat: 2,
-      setXY: { x: 600, y: 550, stepX: 700 },
+      repeat: 3,
+      setXY: { x: 600, y: 550, stepX: 350 },
     });
     this.physics.add.collider(this.star, this.platform);
     this.physics.add.collider(this.bomb, this.platform);
@@ -190,14 +193,14 @@ export default class Level3 extends Scene {
   update() {
     if (this.cursor.left.isDown) {
       //Jika keyboard panah kiri ditekan
-      this.player.setVelocity(-200, 200);
+      this.player.setVelocityX(-200);
       //Kecepatan x : -200
       //Kecepatan y : 200
       //(bergerak ke kiri dan turun kebawah seolah terkena gaya gravitasi)
       this.player.anims.play("left", true);
       this.player.setFlipX(true);
     } else if (this.cursor.right.isDown) {
-      this.player.setVelocity(200, 200);
+      this.player.setVelocityX(200);
       this.player.anims.play("right", true);
       this.player.setFlipX(false);
     } else {
@@ -205,12 +208,10 @@ export default class Level3 extends Scene {
       this.player.anims.play("turn");
     }
     if (this.cursor.up.isDown) {
-      // this.player.setVelocity(0, -200);
-      this.startJump();
       this.player.anims.play("turn");
+      this.startJump();
     }
     if (this.cursor.up.isUp) {
-      this.player.setVelocityY(200);
       this.endJump;
     }
 
@@ -240,19 +241,19 @@ export default class Level3 extends Scene {
       callbackScope: this,
       loop: true,
     });
-    this.player.setVelocityY(-200);
+    this.player.setVelocityY(this.power * -80);
   }
 
   endJump() {
-    this.timer.remove();
+    this.time.removeEvent(this.timer);
     this.player.setVelocityY(this.power * 400);
     this.power = 0;
   }
 
   tick() {
-    if (this.power < 10) {
+    if (this.power < 5) {
       this.power += 1;
-      console.log(this.power);
+      console.log(this.power)
     }
   }
 }

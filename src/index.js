@@ -3,9 +3,9 @@ import StartGameScene from "./scenes/MainMenu";
 import Level1 from "./scenes/Level1";
 import WinScene1 from "./scenes/Win1";
 import Level2 from "./scenes/Level2";
-import WinScene2 from "./scenes/Win2"
-import Level3 from "./scenes/Level3"
-import WinScene3 from "./scenes/Win3"
+import WinScene2 from "./scenes/Win2";
+import Level3 from "./scenes/Level3";
+import WinScene3 from "./scenes/Win3";
 import GameOver from "./scenes/GameOver";
 
 const config = {
@@ -22,11 +22,20 @@ const config = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 1000 },
+      gravity: { y: 500 },
       debug: false,
     },
   },
-  scene: [StartGameScene, Level1, WinScene1, Level2, WinScene2, Level3,  WinScene3, GameOver],
+  scene: [
+    StartGameScene,
+    Level1,
+    WinScene1,
+    Level2,
+    WinScene2,
+    Level3,
+    WinScene3,
+    GameOver,
+  ],
 };
 
 /* eslint-disable-next-line */
