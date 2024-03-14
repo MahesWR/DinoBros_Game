@@ -32,10 +32,10 @@ export default class Level1 extends Scene {
     this.load.image("star", "images/star.png");
     this.load.image("bombs", "images/bomb.png");
     this.load.image("bomb", "images/bomb.png");
-    this.load.audio("theme", "SFX/Mario-theme-song.mp3")
-    this.load.audio("jumpSFX", "SFX/Mario-jump-sound.mp3")
-    this.load.audio("die", "SFX/Pacman-death-sound.mp3")
-    this.load.audio("collect", "SFX/Collect-item-sound.mp3")
+    this.load.audio("theme", "SFX/Mario-theme-song.mp3");
+    this.load.audio("jumpSFX", "SFX/Mario-jump-sound.mp3");
+    this.load.audio("die", "SFX/Pacman-death-sound.mp3");
+    this.load.audio("collect", "SFX/Collect-item-sound-effect.mp3");
 
     this.load.spritesheet("dude", "images/Dino.png", {
       frameWidth: 24,
@@ -190,12 +190,12 @@ export default class Level1 extends Scene {
       backgroundColor: "SkyBlue",
     });
 
-    this.backsound = this.sound.add("theme")
+    this.backsound = this.sound.add("theme");
     var soundConfig = {
       loop: true,
-      volume: 5
-    }
-    this.backsound.play(soundConfig)
+      volume: 1,
+    };
+    this.backsound.play(soundConfig);
   }
 
   update() {
@@ -225,7 +225,7 @@ export default class Level1 extends Scene {
 
     if (this.score >= 3) {
       this.physics.pause();
-      this.backsound.pause()
+      this.backsound.pause();
       this.scene.start("win-scene1");
     }
   }
@@ -233,16 +233,16 @@ export default class Level1 extends Scene {
   // Method
 
   collectStar(player, star) {
-    this.sound.play("collect")
     star.destroy();
+    this.sound.play("collect");
     this.score += 1;
     this.scoreText.setText("Star Collected : " + this.score);
   }
 
   gameOver() {
     this.physics.pause();
-    this.sound.play("die")
-    this.backsound.pause()
+    this.sound.play("die");
+    this.backsound.pause();
     this.scene.start("over-scene");
   }
 
@@ -254,6 +254,7 @@ export default class Level1 extends Scene {
       loop: true,
     });
     this.player.setVelocityY(this.power * -80);
+    this.sound.play("jumpSFX", { volume: 0.1 });
   }
 
   endJump() {
@@ -265,7 +266,7 @@ export default class Level1 extends Scene {
   tick() {
     if (this.power < 5) {
       this.power += 1;
-      console.log(this.power)
+      console.log(this.power);
     }
   }
 }

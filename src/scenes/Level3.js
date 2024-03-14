@@ -35,6 +35,9 @@ export default class Level3 extends Scene {
     this.load.audio("theme", "SFX/Mario-theme-song.mp3")
     this.load.audio("jumpSFX", "SFX/Mario-jump-sound.mp3")
     this.load.audio("die", "SFX/Pacman-death-sound.mp3")
+    this.load.audio("theme", "SFX/Mario-theme-song.mp3")
+    this.load.audio("jumpSFX", "SFX/Mario-jump-sound.mp3")
+    this.load.audio("die", "SFX/Pacman-death-sound.mp3")
 
     this.load.spritesheet("dude", "images/Dino.png", {
       frameWidth: 24,
@@ -188,6 +191,12 @@ export default class Level3 extends Scene {
       fontSize: "64px",
       backgroundColor: "SkyBlue",
     });
+    this.backsound = this.sound.add("theme");
+    var soundConfig = {
+      loop: true,
+      volume: 1,
+    };
+    this.backsound.play(soundConfig);
   }
 
   update() {
@@ -225,12 +234,15 @@ export default class Level3 extends Scene {
 
   collectStar(player, star) {
     star.destroy();
+    this.sound.play("collect")
     this.score += 1;
     this.scoreText.setText("Star Collected : " + this.score);
   }
 
   gameOver() {
     this.physics.pause();
+    this.sound.play("die")
+    this.backsound.pause()
     this.scene.start("over-scene");
   }
 
@@ -242,6 +254,7 @@ export default class Level3 extends Scene {
       loop: true,
     });
     this.player.setVelocityY(this.power * -80);
+    this.sound.play("jumpSFX", { volume: 0.1 });
   }
 
   endJump() {
